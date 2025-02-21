@@ -44,4 +44,4 @@ app.*.map.json
 
 # 🚫 Firebase Functions - Gizleme
 /functions/index.js
-lib/firebase_options.dart
+/lib/firebase_options.dart
