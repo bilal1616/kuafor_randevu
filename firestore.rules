@@ -1,0 +1,81 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Kullanıcı Bilgileri
+    match /users/{userId} {
+      // Kullanıcı kendi bilgilerini okuyabilir, yazabilir ve silebilir
+      allow read, write, delete: if request.auth != null && request.auth.uid == userId;
+
+      // Admin kullanıcılar tüm kullanıcı bilgilerini okuyabilir
+      allow read: if request.auth != null &&
+                  get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+
+      // Admin kullanıcılar diğer kullanıcıları silebilir
+      allow delete: if request.auth != null &&
+                    get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true &&
+                    request.auth.uid != userId;
+    }
+
+    // Kullanıcı Randevuları
+    match /appointments/{appointmentId} {
+      // Kullanıcı sadece kendi randevularını görebilir
+      allow read: if request.auth != null && 
+                  (resource.data.userId == request.auth.uid || 
+                   get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true);
+
+      // Listeleme (list izni)
+      allow list: if request.auth != null && 
+                  (request.auth.uid != null || 
+                   get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true);
+
+      // Randevu oluşturma yetkisi
+      allow create: if request.auth != null && 
+                    (request.resource.data.userId == request.auth.uid || 
+                     get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true);
+
+      // Randevu düzenleme yetkisi
+      allow write: if request.auth != null && 
+                   (resource.data.userId == request.auth.uid || 
+                    get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true);
+
+      // Randevu silme yetkisi sadece adminlere açık
+      allow delete: if request.auth != null && 
+                    get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+    }
+  
+
+    // Hizmetler
+    match /services/{serviceId} {
+      // Herkes hizmetleri okuyabilir
+      allow read: if request.auth != null;
+
+      // Admin hizmetleri yazabilir ve silebilir
+      allow write, delete: if request.auth != null &&
+                           get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+    }
+
+    // Engellenen Saatler (Blocked Times)
+    match /blocked_times/{blockedTimeId} {
+      // Herkes engellenen saatleri okuyabilir
+      allow read: if request.auth != null;
+
+      // Sadece admin engellenen saatleri yazabilir ve silebilir
+      allow write, delete: if request.auth != null &&
+                           get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+    }
+
+    // Randevu Geçmişi (Opsiyonel)
+    match /appointment_history/{historyId} {
+      // Kullanıcı kendi randevu geçmişini okuyabilir
+      allow read: if request.auth != null && resource.data.userId == request.auth.uid;
+
+      // Admin tüm randevu geçmişlerini okuyabilir
+      allow read: if request.auth != null &&
+                  get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+
+      // Hiç kimse yazamaz (koruma amaçlı)
+      allow write: if false;
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "634656169084",
+    "project_id": "salon-kuafor-randevu",
+    "storage_bucket": "salon-kuafor-randevu.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:634656169084:android:46aefe2d0799533594bdf9",
+        "android_client_info": {
+          "package_name": "com.example.salonkuaforrandevu"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC7-YXbdbWaxfd4KoawPy7dQTHyXAcWAyE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

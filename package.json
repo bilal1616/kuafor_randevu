@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "firebase-admin": "^13.0.1",
+    "firebase-functions": "^6.1.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.16.0",
+    "eslint": "^9.16.0",
+    "globals": "^15.13.0"
+  }
+}
